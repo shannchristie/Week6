@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;500;700;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="src/styles.css" />
+    <title>My weather application</title>
+  </head>
+<style>body {
+  background: #f9f7fe;
+  font-family: "Roboto", sans-serif;
+}
+
+a {
+  color: #926cf3;
+}
+
+.weather-app {
+  background: white;
+  max-width: 600px;
+  margin: 60px auto;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 30px 50px rgba(65, 50, 100, 0.08);
+}
+
+</style>
+  <body>
+    <div class="weather-app">
+      <header>
+        <form id="search-form">
+          <input
+            type="search"
+            placeholder="Enter a city.."
+            required
+            class="search-input"
+            id="search-input"
+          />
+          <input type="submit" value="Search" class="search-button" />
+        </form>
+      </header>
+
+      <main>
+        <div class="current-weather">
+          <div>
+            <h1 class="current-city" id="current-city">Paris</h1>
+            <p class="current-details">
+              <span id="current-date"></span>, moderate rain <br />
+              Humidity: <strong>87%</strong>, Wind: <strong>7.2km/h</strong>
+            </p>
+          </div>
+
+          <div class="current-temperature">
+            <span class="current-temperature-icon">☀️</span>
+            <span class="current-temperature-value">24</span>
+            <span class="current-temperature-unit">°C</span>
+          </div>
+        </div>
+      </main>
+
+      <footer>
+        <p>
+          This project was coded by
+          <a href="#" target="https://github.com/shannchristie">✨🌙 Shannen</a> and is
+          <a href="#" target="_blank">on GitHub</a> and
+          <a href="#" target="_blank">hosted on Netlify</a>
+        </p>
+      </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="src/index.js"></script>
+    <script>let apiKey = "dfb7a34o08287b67f88fe5bd29ta4408";
+
+function search(event) {
+  event.preventDefault();
+
+  let searchInputElement = document.querySelector("#search-input");
+  let city = searchInputElement.value;
+
+  let apiUrl = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}&units=metric`;
+
+  axios.get(apiUrl).then(displayWeather).catch(() => {
+    alert("Sorry, city not found!");
+  });
+
+  searchInputElement.value = "";
+}
+
+function formatDate(date) {
+  let minutes = date.getMinutes().toString().padStart(2, "0");
+  let hours = date.getHours().toString().padStart(2, "0");
+
+  let days = [
+    "Sunday","Monday","Tuesday","Wednesday",
+    "Thursday","Friday","Saturday",
+  ];
+
+  return `${days[date.getDay()]} ${hours}:${minutes}`;
+}
+
+function displayWeather(response) {
+  document.querySelector("#current-city").innerHTML =
+    response.data.city;
+
+  document.querySelector(".current-temperature-value").innerHTML =
+    Math.round(response.data.temperature.current);
+}
+
+document.querySelector("#current-date").innerHTML =
+  formatDate(new Date());
+
+document
+  .querySelector("#search-form")
+  .addEventListener("submit", search);
+</script>
+  </body>
+</html>
